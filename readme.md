@@ -32,3 +32,14 @@
 | White Balance             | cv.CAP_PROP_WHITE_BALANCE_RED_V | Adjustment to red channel so that white objects have neutral RGB                     |
 | Auto White Balance        | cv.CAP_PROP_AUTO_WB             | Toggles auto white balance                                                           |
 | White Balance Temperature | cv.CAP_PROP_WB_TEMPERATURE      | Literally the same as temperature, but manufactures might name them differently      |
+
+
+Most relevant things to med-micro allegedly:
+Exposure
+Gain
+White Balance
+Focus
+Brightness
+Sharpness
+
+Turning off auto features for consistency

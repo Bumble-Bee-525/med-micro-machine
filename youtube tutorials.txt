@@ -3,3 +3,6 @@ https://www.youtube.com/watch?v=mJ-qvsxPHpY
 
 PySide Tutorial:
 https://www.youtube.com/watch?v=Z1N9JzNax2k
+
+PySide Packaging Tutorial:
+https://www.pythonguis.com/tutorials/packaging-pyside6-applications-windows-pyinstaller-installforge/
