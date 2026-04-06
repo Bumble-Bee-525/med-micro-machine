@@ -5,7 +5,7 @@ import cv2
 print("LAUNCHING. . .")
 
 # initialize video capture using windows directshow
-cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 # wait for capture to start
 while not cap.isOpened():
