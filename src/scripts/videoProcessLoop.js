@@ -1,33 +1,48 @@
 
 
+//TO DO: RENAME THIS GARBAGE
+var src;
+var dst;
+var cap;
+var delay;
+const FPS = 30;
+
+
 function videoProcessLoop()
 {
+    //don't do anything unless openCV is loaded/intialized
+    if (!openCVReady)
+    {
+        return;
+    }
 
-    //JS apparently only checks if you literally set the height/width attribute, if not, it doesn't measure anything and just returns a height/width of 0
+    //initialize frame variables
     videoTag.height = videoTag.videoHeight;
     videoTag.width = videoTag.videoWidth;
+    src = new cv.Mat(videoTag.videoHeight, videoTag.videoWidth, cv.CV_8UC4);
+    dst = new cv.Mat(videoTag.videoHeight, videoTag.videoWidth, cv.CV_8UC1);
+    cap = new cv.VideoCapture(videoTag);
 
-    //TO DO: openCV stuff should check if there's data available
-    
-    let src = new cv.Mat(videoTag.videoHeight, videoTag.videoWidth, cv.CV_8UC4);
-    let dst = new cv.Mat(videoTag.videoHeight, videoTag.videoWidth, cv.CV_8UC1);
-    let cap = new cv.VideoCapture(videoTag);
-    var n = 0;
-
-    const FPS = 30;
     function processVideo() {
+        //don't do anything unless camera stream is ready
+        if (!cameraStreamReady || videoTag.height == 0 || videoTag.width == 0)
+        {
+            src.delete();
+            dst.delete();
+            return;
+        }
+
         try {
-            let begin = Date.now();
+            var begin = Date.now();
+
             // start processing.
             cap.read(src);
             cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
             cv.imshow(document.getElementById("canvasOutput"), dst);
             // schedule the next one.
-            let delay = 1000/FPS - (Date.now() - begin);
+            delay = 1000/FPS - (Date.now() - begin);
 
-            document.getElementById("stupidShit").innerText = n;
-            n++;
-
+            //DELETE LATER
             if (!streaming)
             {
                 src.delete();
@@ -41,8 +56,11 @@ function videoProcessLoop()
                 setTimeout(processVideo, delay);
             }
                 
-        } catch (err) {
-            console.error(err);
+        } catch (error) {
+            src.delete();
+            dst.delete();
+            console.error(error);
+            mainDisplayPrint(`${error.name}: ${error.message}`)
         }
     };
 
@@ -50,3 +68,9 @@ function videoProcessLoop()
     setTimeout(processVideo, 0);
 }
 
+
+//Final safegaurd to prevent memory leaks if user closes window
+window.addEventListener("beforeunload", (unloadEvent) => {
+    src.delete();
+    dst.delete();
+});
