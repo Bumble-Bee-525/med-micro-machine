@@ -1,15 +1,12 @@
 /*
     QUESTIONS??
-    - await loading of openCV.JS
     - device change??
-    - watch for memory leaks
 
     TO DO:
     create list of devices, on click double check it's in the list still
     
 
     note: i'm def gonna comment a lot because I'm learning all this stuff for the first time
-
 */
 
 
@@ -42,14 +39,16 @@ document.getElementById('testInput').addEventListener('change', function(e) {
 
 //have mediaStream be global, then have a function #1 for releasing old device if applicable and selecting a new stream
 
-
-function releaseHardware()
+//cuts all connections with camera hardware used by camera stream
+function releaseHardware(video)
 {
-    if (videoTag.srcObject)
+    if (video.srcObject)
     {
-        videoTag.srcObject.getTracks().forEach(track => {
+        video.srcObject.getTracks().forEach(track => {
             track.stop();
         });
+
+        video.srcObject = null;
     }
 }
 
@@ -61,7 +60,13 @@ function selectAndStartMediaStream(deviceID)
     cameraStreamReady = false;
 
     //Release hardware from previous stream
-    releaseHardware();
+    releaseHardware(videoTag);
+
+    //replaces possibly tainted canvas with new canvas
+    canvasOutputTag.remove();
+    canvasOutputTag = document.createElement("canvas");
+    canvasOutputTag.id = "canvasOutput";
+    canvasOutputParentTag.append(canvasOutputTag);
 
     //TO DO: select by deviceID
     mainDisplayPrint(`Attempting stream start on ${deviceID}`);
@@ -83,6 +88,3 @@ function selectAndStartMediaStream(deviceID)
         videoProcessLoop();
     }
 }
-
-//DELETE
-selectAndStartMediaStream("boogers");

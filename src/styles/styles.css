@@ -1,0 +1,27 @@
+
+:root
+{
+    --text-display-color : #00a000;
+}
+
+.maxWidth-md
+{
+    max-width: 768px;
+}
+
+.mfdButton
+{
+    height: 100%;
+    width: 100%;
+}
+
+.mfdTextDisplay
+{
+    color: var(--text-display-color);
+    font-weight: bolder;
+}
+
+.hide
+{
+    display: none;
+}

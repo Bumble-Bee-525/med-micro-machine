@@ -10,7 +10,7 @@ const FPS = 30;
 
 function videoProcessLoop()
 {
-    //don't do anything unless openCV is loaded/intialized
+    //don't do anything if openCV isn't loaded/intialized
     if (!openCVReady)
     {
         return;
@@ -29,6 +29,7 @@ function videoProcessLoop()
         {
             src.delete();
             dst.delete();
+            console.log("done cleaning");
             return;
         }
 
@@ -41,20 +42,7 @@ function videoProcessLoop()
             cv.imshow(document.getElementById("canvasOutput"), dst);
             // schedule the next one.
             delay = 1000/FPS - (Date.now() - begin);
-
-            //DELETE LATER
-            if (!streaming)
-            {
-                src.delete();
-                dst.delete();
-                console.log("done cleaning");
-                return;
-            }
-
-            else
-            {
-                setTimeout(processVideo, delay);
-            }
+            setTimeout(processVideo, delay);
                 
         } catch (error) {
             src.delete();

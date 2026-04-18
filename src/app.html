@@ -4,36 +4,95 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Felina</title>
-        <link>
+        <!-- TO DO: FAVICON-->
+        <link rel="icon" href="assets/favicon.png" type="image/png">
         <!--Import Bootstrap CSS-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="styles/styles.css" rel="stylesheet">
     </head>
     <body>
-        <!-- Main  -->
+        <!-- default -->
         <h1>Guess I got, what I deserved</h1>
         <p>Kept you waiting there too long my love</p>
-        <button class="btn btn-success" onclick="">Start</button>
-        <button class="btn btn-outline-danger">Stop</button>
-        
-        <input class="form-control" disabled type="text" value="Standby for OpenCV initialization." title="MAIN_TEXT_DISPLAY" id="mainTextDisplay">
 
-        <a href="https://github.com/Bumble-Bee-525/med-micro-machine">Help</a>
+
+        <a href="https://github.com/Bumble-Bee-525/med-micro-machine">Help me....</a>
 
         <!--DELETE THIS SHIT TOO OH MY FUCKING GOD-->
-        <button class="btn btn-primary" onclick="streaming = false;">SHUT DOWN AND SMITE MEMORY LEAKS</button>
-        <button class="btn btn-primary" onclick="videoProcessLoop()">Begin openCV</button>
+        <button class="btn btn-danger mx-auto my-3" style="display: block;" onclick="cameraStreamReady = false;">EMERGENCY SHUT DOWN AND SMITE MEMORY LEAKS</button>
+        <button class="btn btn-success mx-auto my-3" style="display: block;" onclick="selectAndStartMediaStream('buttfart')">Initiate</button>
+
         
-        <input title="TEMP" type="file" id="testInput" accept="video/*">
+        <!--Main Panel-->
+        <div class="container maxWidth-md">
+            <!--Instant Functions-->
+            <!--MFD Style Display Buttons (emojis used to save on file size for icons ok? also im too lazy to make icons)-->
+            <div class="row">
+                <input class="form-control text-center mfdTextDisplay" disabled type="text" value="Standby for OpenCV initialization." title="Main Text Display" id="mainTextDisplay">
+            </div>
+            <div class="row my-3 g-2">
+                <div class="col text-center">
+                    <button class="btn btn-outline-dark mfdButton">📏Scale Bar</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-outline-success mfdButton">📊Color Distance</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-outline-danger mfdButton">⚙️Color Calibrate</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-outline-info mfdButton" data-bs-toggle="button">❄️Freeze</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-outline-secondary mfdButton">➕</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-outline-secondary mfdButton">➖</button>
+                </div>
+            </div>
+            <div class="row" id="canvasOutputParent">
+                <canvas id="canvasOutput"></canvas>
+            </div>
+            <!--Continuous functions-->
+            <div class="row my-3 g-2">
+                <div class="col text-center">
+                    <button class="btn btn-outline-warning mfdButton">📸Photo</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-outline-danger mfdButton" data-bs-toggle="button">🎥Record</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-outline-primary mfdButton" data-bs-toggle="button">Edge/Contour</button>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-outline-success mfdButton" data-bs-toggle="button">Mosaic Imaging</button>
+                </div>
+            </div>
+            <!---->
+            <div class="row my-3">
+                <div class="col">
+                    <textarea class="mfdButton" title="notepad">NOTEPAD: write anything you want here</textarea>
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col">
+                    <input title="TEMP" type="file" id="testInput" accept="video/*">
+                </div>
+            </div>
+        </div>
 
-        <video id="userVideoTag" controls></video>
-        <canvas id="canvasOutput"></canvas>
+        <footer class="text-center">
+            Logo and Favicon Produced by Charlie Fifield 🦆
+        </footer>
 
-        <textarea title="notepad"></textarea>
+        <!--hidden video element that actually parses frames from camera-->
+        <video id="userVideoTag" controls class="hide"></video>
+
 
         <!-- Begin Sphagetti Code-->
         <!--DO NOT TOUCH THE ORDER, WAS MASSIVE PAIN TO FIGURE OUT WHY CODE NOT WORKING-->
         <!--First, set reminder for openCV to activate camera code JS file once WASM binary crap, not just JS, is ready-->
-        <script src="scripts/init.js"></script>
+        <script src="scripts/utils.js"></script>
         <script src="scripts/initOpenCV.js"></script>
         <script src="scripts/streamHandler.js"></script>
         <!--Next, openCV loads all JS objects/classes so they can be used and initializes the WASM binary stuf-->
