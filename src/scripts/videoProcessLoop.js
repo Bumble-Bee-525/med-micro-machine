@@ -25,7 +25,7 @@ function videoProcessLoop()
 
     function processVideo() {
         //don't do anything unless camera stream is ready
-        if (!cameraStreamReady || videoTag.height == 0 || videoTag.width == 0)
+        if (!cameraStreamActive || videoTag.height == 0 || videoTag.width == 0)
         {
             src.delete();
             dst.delete();

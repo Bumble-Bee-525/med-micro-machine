@@ -1,30 +1,31 @@
-/*
-    QUESTIONS??
-    - device change??
-
-    TO DO:
-    create list of devices, on click double check it's in the list still
-    
-
-    note: i'm def gonna comment a lot because I'm learning all this stuff for the first time
-*/
 
 
 
 
-//set up video stream from user's camera
 const videoConstraints = {
     audio: false,
     video: {
         width: 1280,
         height: 720,
-        resizeMode: "none"
+        resizeMode: "none",
+        facingMode: "environment"
     }
 }
 
 const videoTag = document.getElementById("userVideoTag");
-var cameraStreamReady = false;
+var cameraStreamActive = false;
 var currentDevice = null;
+var cameraPermissionStatus = false;
+
+
+//get browser to prompt user for camera permission AND gives enumerateDevice permission to see all deviceIDs
+navigator.mediaDevices.getUserMedia(videoConstraints).then((cameraStream) => {
+    cameraPermissionStatus = true;
+}).catch((error) => {
+    //log errors and stuf
+    console.error(error);
+    mainDisplayPrint(`${error.name}: ${error.message}`);
+});
 
 
 //TEST CODE FOR FILE UPLOAD
@@ -37,7 +38,17 @@ document.getElementById('testInput').addEventListener('change', function(e) {
 */
 
 
-//have mediaStream be global, then have a function #1 for releasing old device if applicable and selecting a new stream
+/*
+    QUESTIONS??
+    - device change?? not supported
+
+    TO DO:
+    create list of devices, on click double check it's in the list still
+    
+
+    note: i'm def gonna comment a lot because I'm learning all this stuff for the first time
+*/
+
 
 //cuts all connections with camera hardware used by camera stream
 function releaseHardware(video)
@@ -57,16 +68,13 @@ function releaseHardware(video)
 function selectAndStartMediaStream(deviceID)
 {
     //Shut off openCV loop from previous stream
-    cameraStreamReady = false;
+    cameraStreamActive = false;
 
     //Release hardware from previous stream
     releaseHardware(videoTag);
 
     //replaces possibly tainted canvas with new canvas
-    canvasOutputTag.remove();
-    canvasOutputTag = document.createElement("canvas");
-    canvasOutputTag.id = "canvasOutput";
-    canvasOutputParentTag.append(canvasOutputTag);
+    replaceTaintedCanvas(canvasOutputParentTag, canvasOutputTag);
 
     //TO DO: select by deviceID
     mainDisplayPrint(`Attempting stream start on ${deviceID}`);
@@ -82,9 +90,10 @@ function selectAndStartMediaStream(deviceID)
     });
 
     //wait for video to load before calling openCV loop
-    videoTag.onloadedmetadata = (loadedMetaDataEvent) => {
+    videoTag.addEventListener("loadedmetadata", function (loadedMetaDataEvent) {
         //call openCV loop only when ready
-        cameraStreamReady = true;
+        cameraStreamActive = true;
         videoProcessLoop();
-    }
+        mainDisplayPrint(`Stream succesfully started on ${deviceID}`);
+    });
 }
