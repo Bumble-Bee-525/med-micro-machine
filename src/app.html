@@ -21,14 +21,32 @@
 
         <!--Main Panel-->
         <div class="container maxWidth-md">
-            <div class="row">
-                <div class="dropdown-center text-center">
-                    <button class="btn btn-outline-primary dropdown-toggle" title="Select a Device" type="button" data-bs-toggle="dropdown" id="devicesMenuButton">Select Device</button>
-                    <ul class="dropdown-menu" id="devicesMenu"></ul>
+            <div class="row g-2">
+                <!--device selection menu-->
+                <div class="col">
+                    <div class="dropdown-center text-center">
+                        <button class="btn btn-outline-primary dropdown-toggle" title="Select a Device" type="button" data-bs-toggle="dropdown" id="devicesMenuButton">Select Device</button>
+                        <ul class="dropdown-menu" id="devicesMenu"></ul>
+                    </div>
+                </div>
+                <!--microscope lens info-->
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text">Total Magnification:</span>
+                        <input type="number" class="form-control" title="Magnification" id="magnificationInput">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text">Field Number:</span>
+                        <input type="number" class="form-control" title="Field Number" id="fieldNumberInput">
+                    </div>
                 </div>
             </div>
-            <div class="row my-3">
-                <input class="form-control text-center mfdTextDisplay" disabled type="text" value="Standby for OpenCV initialization." title="Main Text Display" id="mainTextDisplay">
+            <div class="row my-3 g-2">
+                <div class="col">
+                    <input class="form-control text-center mfdTextDisplay" disabled type="text" value="Standby for OpenCV initialization." title="Main Text Display" id="mainTextDisplay">
+                </div>
             </div>
             <!--Instant Functions-->
             <!--MFD Style Display Buttons (emojis used to save on file size for icons ok? also im too lazy to make icons)-->
@@ -44,12 +62,6 @@
                 </div>
                 <div class="col text-center">
                     <button class="btn btn-outline-info mfdButton" data-bs-toggle="button" id="freezeButton">❄️Freeze</button>
-                </div>
-                <div class="col text-center">
-                    <button class="btn btn-outline-secondary mfdButton">➕</button>
-                </div>
-                <div class="col text-center">
-                    <button class="btn btn-outline-secondary mfdButton">➖</button>
                 </div>
             </div>
             <div class="row" id="canvasOutputParent">

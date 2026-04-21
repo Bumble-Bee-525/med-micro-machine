@@ -1,7 +1,8 @@
 
 //plays or pauses video stream when user clicks the button
 var toggleFreeze = false;
-freezeButtonTag.addEventListener("click", function (clickEvent) {
+function freezeToggleHandler(clickEvent)
+{
     toggleFreeze = !toggleFreeze;
     if (toggleFreeze)
     {
@@ -9,7 +10,8 @@ freezeButtonTag.addEventListener("click", function (clickEvent) {
         return;
     }
     videoTag.play();
-});
+}
+freezeButtonTag.addEventListener("click", freezeToggleHandler);
 
 
 //start stream when a camera device is selected by user, or end stream if none selected.
@@ -20,17 +22,35 @@ function selectDeviceHandler(clickEvent)
     {
         defaultImageTag.classList.add("hide");
         canvasOutputTag.classList.remove("hide");
-        startMediaStream(deviceId, clickEvent.target.innerText);
+        startCameraStream(deviceId, clickEvent.target.innerText);
         return;
     }
     releaseHardware(videoTag);
 }
 
 
+//start stream when a file is uploaded by user, or end stream if none selected
+function selectMediaFileHandler(fileUploadEvent)
+{
+    //prevent memory leaks by freeing previous file
+    if (videoTag.src)
+    {
+        URL.revokeObjectURL(videoTag.src);
+    }
+
+    //replace placeholder image with actual image
+    defaultImageTag.classList.add("hide");
+    canvasOutputTag.classList.remove("hide");
+
+    startUploadedVideoStream(fileUploadEvent.target.files[0]);
+}
+
+document.getElementById('testInput').addEventListener('change', selectMediaFileHandler);
+
 
 /* NOTE: did not use permissions API because:
 1) I tested it and it failed in the edge case where the user revokes permission
-2) deviceIDs are still obscured EVEN IF the user gave permission to use camera 
+2) deviceIDs are still obscured by browser EVEN IF the user gave permission to use camera 
 yea this way will also fire if closed by tapping again, but there isn't any other good way to detect a dropdown being opened
 */
 
