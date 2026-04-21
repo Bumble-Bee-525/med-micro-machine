@@ -12,20 +12,33 @@ freezeButtonTag.addEventListener("click", function (clickEvent) {
 });
 
 
-//refreshes device list each time it's opened
-//yea it will also fire if closed by tapping again, but there isn't any other good way to detect a dropdown being opened
+//start stream when a camera device is selected by user, or end stream if none selected.
+function selectDeviceHandler(clickEvent)
+{
+    var deviceId = clickEvent.target.deviceId;
+    if (deviceId)
+    {
+        defaultImageTag.classList.add("hide");
+        canvasOutputTag.classList.remove("hide");
+        startMediaStream(deviceId, clickEvent.target.innerText);
+        return;
+    }
+    releaseHardware(videoTag);
+}
+
+
 
 /* NOTE: did not use permissions API because:
 1) I tested it and it failed in the edge case where the user revokes permission
 2) deviceIDs are still obscured EVEN IF the user gave permission to use camera 
+yea this way will also fire if closed by tapping again, but there isn't any other good way to detect a dropdown being opened
 */
 
-//call USERMEDIA API once to unlock all cameras
-
-
-
-
-selectDeviceButton.addEventListener("click", async function (clickEvent) {
+//refreshes device list each time it's opened
+selectDeviceButton.addEventListener("click", (clickEvent) => {
+    //clear old device list
+    selectDeviceMenu.replaceChildren();
+    
     //check if user gave permission to use camera, if not, no deviceIDs will even show up
     if (!cameraPermissionStatus)
     {
@@ -34,25 +47,40 @@ selectDeviceButton.addEventListener("click", async function (clickEvent) {
         return;
     }
 
-    //populate
+    //get list of devices
     navigator.mediaDevices.enumerateDevices().then((deviceList) => {
-        console.log(deviceList);
-        for (var device in deviceList)
+        //add option to select no device at all (essentially shutdown all hardware)
+        deviceList.push({"kind": "videoinput", "deviceId": null, "label": "Shut down"})
+
+        //populate dropdown menu with button for each device
+        var device;
+        for (device of deviceList)
         {
-            //do some shit
-            //if it's a videoinput throw it in
-            //set document ID to device ID
-            console.log(device);
-            return;
+            //Ensure only cameras are considered
+            if (device.kind === "videoinput")
+            {
+                //create HTML button
+                const deviceSelectionButton = document.createElement("button");
+                Object.assign(deviceSelectionButton, {
+                    "type": "button",
+                    "className": "dropdown-item",
+                    "deviceId": device.deviceId,
+                    "innerText": device.label
+                });
+
+                //add event listener
+                deviceSelectionButton.addEventListener("click", selectDeviceHandler);
+
+                //add button to li element for bootstrap css purposes
+                const liElem = document.createElement("li");
+                liElem.appendChild(deviceSelectionButton);
+                selectDeviceMenu.appendChild(liElem);
+            }
         }
+    //display errors 
     }).catch((error) => {
         console.error(error);
         mainDisplayPrint(`${error.name}: ${error.message}`);
         return;
     });
 });
-
-
-//currentDevice = ???
-
-//USE STREAM.getTracks()[0].getSettings().deviceID to find out which device ACTUALLY got selected

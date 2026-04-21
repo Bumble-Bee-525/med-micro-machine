@@ -14,18 +14,7 @@ const videoConstraints = {
 
 const videoTag = document.getElementById("userVideoTag");
 var cameraStreamActive = false;
-var currentDevice = null;
 var cameraPermissionStatus = false;
-
-
-//get browser to prompt user for camera permission AND gives enumerateDevice permission to see all deviceIDs
-navigator.mediaDevices.getUserMedia(videoConstraints).then((cameraStream) => {
-    cameraPermissionStatus = true;
-}).catch((error) => {
-    //log errors and stuf
-    console.error(error);
-    mainDisplayPrint(`${error.name}: ${error.message}`);
-});
 
 
 //TEST CODE FOR FILE UPLOAD
@@ -38,16 +27,14 @@ document.getElementById('testInput').addEventListener('change', function(e) {
 */
 
 
-/*
-    QUESTIONS??
-    - device change?? not supported
-
-    TO DO:
-    create list of devices, on click double check it's in the list still
-    
-
-    note: i'm def gonna comment a lot because I'm learning all this stuff for the first time
-*/
+//get browser to prompt user for camera permission AND gives enumerateDevice permission to see all deviceIDs
+navigator.mediaDevices.getUserMedia(videoConstraints).then((cameraStream) => {
+    cameraPermissionStatus = true;
+}).catch((error) => {
+    //log errors and stuf
+    console.error(error);
+    mainDisplayPrint(`${error.name}: ${error.message}`);
+});
 
 
 //cuts all connections with camera hardware used by camera stream
@@ -55,29 +42,31 @@ function releaseHardware(video)
 {
     if (video.srcObject)
     {
+        //shut down openCV loop
+        cameraStreamActive = false;
+
+        //kill all tracks, freeing the hardware
         video.srcObject.getTracks().forEach(track => {
             track.stop();
         });
 
+        //release junk mediaStream object
         video.srcObject = null;
+        
+        mainDisplayPrint("Camera and system shut down successfully.");
     }
 }
 
 
 //given a selected deviceID, start a stream using userMedia API then activate openCV loop when ready
-function selectAndStartMediaStream(deviceID)
+function startMediaStream(deviceID, deviceName)
 {
-    //Shut off openCV loop from previous stream
-    cameraStreamActive = false;
-
     //Release hardware from previous stream
     releaseHardware(videoTag);
-
-    //replaces possibly tainted canvas with new canvas
-    replaceTaintedCanvas(canvasOutputParentTag, canvasOutputTag);
-
-    //TO DO: select by deviceID
-    mainDisplayPrint(`Attempting stream start on ${deviceID}`);
+    
+    //select by deviceID
+    videoConstraints.video.deviceID = deviceID;
+    mainDisplayPrint(`Attempting stream start on ${deviceName}`);
 
     //request API to start stream
     navigator.mediaDevices.getUserMedia(videoConstraints).then((cameraStream) => {
@@ -94,6 +83,6 @@ function selectAndStartMediaStream(deviceID)
         //call openCV loop only when ready
         cameraStreamActive = true;
         videoProcessLoop();
-        mainDisplayPrint(`Stream succesfully started on ${deviceID}`);
+        mainDisplayPrint(`Stream succesfully started on ${videoTag.srcObject.getTracks()[0].label}`);
     });
 }

@@ -11,7 +11,7 @@ const FPS = 30;
 function videoProcessLoop()
 {
     //don't do anything if openCV isn't loaded/intialized
-    if (!openCVReady)
+    if (!openCVRuntimeReady)
     {
         return;
     }

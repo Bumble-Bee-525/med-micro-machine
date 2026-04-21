@@ -18,23 +18,20 @@
 
         <a href="https://github.com/Bumble-Bee-525/med-micro-machine">Help me....</a>
 
-        <!--DELETE THIS SHIT TOO OH MY FUCKING GOD-->
-        <button class="btn btn-danger mx-auto my-3" style="display: block;" onclick="cameraStreamActive = false;">EMERGENCY SHUT DOWN AND SMITE MEMORY LEAKS</button>
-        <button class="btn btn-success mx-auto my-3" style="display: block;" onclick="selectAndStartMediaStream('buttfart')">Initiate</button>
-
-        
-        <div class="dropdown">
-            <button class="btn btn-outline-primary dropdown-toggle" title="Select a Device" type="button" data-bs-toggle="dropdown" id="devicesMenuButton">Select Device</button>
-            <ul class="dropdown-menu" id="devicesMenu"></ul>
-        </div>
 
         <!--Main Panel-->
         <div class="container maxWidth-md">
-            <!--Instant Functions-->
-            <!--MFD Style Display Buttons (emojis used to save on file size for icons ok? also im too lazy to make icons)-->
             <div class="row">
+                <div class="dropdown-center text-center">
+                    <button class="btn btn-outline-primary dropdown-toggle" title="Select a Device" type="button" data-bs-toggle="dropdown" id="devicesMenuButton">Select Device</button>
+                    <ul class="dropdown-menu" id="devicesMenu"></ul>
+                </div>
+            </div>
+            <div class="row my-3">
                 <input class="form-control text-center mfdTextDisplay" disabled type="text" value="Standby for OpenCV initialization." title="Main Text Display" id="mainTextDisplay">
             </div>
+            <!--Instant Functions-->
+            <!--MFD Style Display Buttons (emojis used to save on file size for icons ok? also im too lazy to make icons)-->
             <div class="row my-3 g-2">
                 <div class="col text-center">
                     <button class="btn btn-outline-dark mfdButton">📏Scale Bar</button>
@@ -56,7 +53,8 @@
                 </div>
             </div>
             <div class="row" id="canvasOutputParent">
-                <canvas id="canvasOutput"></canvas>
+                <canvas id="canvasOutput" class="hide"></canvas>
+                <img src="assets/cameraAlt.png" id="defaultImage" alt="defaultImage">
             </div>
             <!--Continuous functions-->
             <div class="row my-3 g-2">
