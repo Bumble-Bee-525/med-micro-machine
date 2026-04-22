@@ -29,17 +29,19 @@
                         <ul class="dropdown-menu" id="devicesMenu"></ul>
                     </div>
                 </div>
+                <!--file uploads-->
+                <div class="col">
+                    <input title="fileInput" type="file" class="form-control mfdButton" id="fileInput" accept="video/*, image/*">
+                </div>
                 <!--microscope lens info-->
                 <div class="col">
                     <div class="input-group">
-                        <span class="input-group-text">Total Magnification:</span>
-                        <input type="number" class="form-control" title="Magnification" id="magnificationInput">
+                        <input type="number" class="form-control" title="Magnification" id="magnificationInput" placeholder="Total Magnification:">
                     </div>
                 </div>
                 <div class="col">
                     <div class="input-group">
-                        <span class="input-group-text">Field Number:</span>
-                        <input type="number" class="form-control" title="Field Number" id="fieldNumberInput">
+                        <input type="number" class="form-control" title="Field Number" id="fieldNumberInput" placeholder="Field Number:">
                     </div>
                 </div>
             </div>
@@ -67,6 +69,8 @@
             <div class="row" id="canvasOutputParent">
                 <canvas id="canvasOutput" class="hide"></canvas>
                 <img src="assets/cameraAlt.png" id="defaultImage" alt="defaultImage">
+                <!--Hidden Canvas Element used as Buffers-->
+                <canvas id="rawBufferCanvas" class="hide"></canvas>
             </div>
             <!--Continuous functions-->
             <div class="row my-3 g-2">
@@ -87,11 +91,6 @@
             <div class="row my-3">
                 <div class="col">
                     <textarea class="mfdButton" title="notepad">NOTEPAD: write anything you want here</textarea>
-                </div>
-            </div>
-            <div class="row my-3">
-                <div class="col">
-                    <input title="TEMP" type="file" id="testInput" accept="video/*">
                 </div>
             </div>
         </div>

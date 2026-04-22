@@ -1,64 +1,65 @@
+var setFPS = 30;
 
 
-//TO DO: RENAME THIS GARBAGE
-var src;
-var dst;
-var cap;
-var delay;
-const FPS = 30;
 
-
-function videoProcessLoop()
+//function call processes one frame from the buffer canvas
+function processFrame(inputImg, destinationImg)
 {
-    //don't do anything if openCV isn't loaded/intialized
+    try { 
+        var delay;
+        var begin = Date.now();
+
+        //shut down loop if told to
+        if (!openCVloopActive)
+        {
+            //free memory
+            inputImg.delete();
+            destinationImg.delete();
+            mainDisplayPrint("OpenCV loop shut down. Memory freed successfuly.");
+            return;
+        }
+
+        //if we are expecting to need to load a frame from videoTag into buffer, otherwise we are expecting a image to already be loaded
+        if (videoStreamActive)
+        {
+            bufferContext.drawImage(videoTag, 0, 0, videoTag.videoWidth, videoTag.videoHeight);
+        }
+
+        //read data from buffer
+        inputImg.data.set(bufferContext.getImageData(0, 0, rawBufferCanvas.width, rawBufferCanvas.height).data);
+        
+        //DELETE
+        cv.imshow(canvasOutputTag, inputImg);
+
+        // schedule the next one.
+        delay = (1000/setFPS) - (Date.now() - begin);
+        mainDisplayPrint(1000/(Date.now() - begin));
+        setTimeout(processFrame, delay, inputImg, destinationImg, bufferContext);
+            
+    } catch (error) {
+        inputImg.delete();
+        destinationImg.delete();
+        console.error(error);
+        mainDisplayPrint(`OpenCV messed up: ${error.name}: ${error.message}`)
+    }
+};
+
+
+//when image gets uploaded
+function startOpenCVloop()
+{
+    //don't do anything if openCV WASM binary isn't loaded/intialized
     if (!openCVRuntimeReady)
     {
         return;
     }
 
+    
     //initialize frame variables
-    videoTag.height = videoTag.videoHeight;
-    videoTag.width = videoTag.videoWidth;
-    src = new cv.Mat(videoTag.videoHeight, videoTag.videoWidth, cv.CV_8UC4);
-    dst = new cv.Mat(videoTag.videoHeight, videoTag.videoWidth, cv.CV_8UC1);
-    cap = new cv.VideoCapture(videoTag);
+    var inputImg = new cv.Mat(rawBufferCanvas.height, rawBufferCanvas.width, cv.CV_8UC4);
+    var destinationImg = new cv.Mat(rawBufferCanvas.height, rawBufferCanvas.width, cv.CV_8UC4);
+    bufferContext = rawBufferCanvas.getContext("2d");
 
-    function processVideo() {
-        //don't do anything unless camera stream is ready
-        if (!videoStreamActive || videoTag.height == 0 || videoTag.width == 0)
-        {
-            src.delete();
-            dst.delete();
-            console.log("done cleaning");
-            return;
-        }
-
-        try {
-            var begin = Date.now();
-
-            // start processing.
-            cap.read(src);
-            cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
-            cv.imshow(document.getElementById("canvasOutput"), dst);
-            // schedule the next one.
-            delay = 1000/FPS - (Date.now() - begin);
-            setTimeout(processVideo, delay);
-                
-        } catch (error) {
-            src.delete();
-            dst.delete();
-            console.error(error);
-            mainDisplayPrint(`${error.name}: ${error.message}`)
-        }
-    };
-
-    // schedule the first one.
-    setTimeout(processVideo, 0);
+    // schedule the first 
+    setTimeout(processFrame, 0, inputImg, destinationImg);
 }
-
-
-//Final safegaurd to prevent memory leaks if user closes window
-window.addEventListener("beforeunload", (unloadEvent) => {
-    src.delete();
-    dst.delete();
-});

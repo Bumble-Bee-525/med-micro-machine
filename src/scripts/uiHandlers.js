@@ -20,49 +20,54 @@ function selectDeviceHandler(clickEvent)
     var deviceId = clickEvent.target.deviceId;
     if (deviceId)
     {
+        //replace placeholder image with actual image
         defaultImageTag.classList.add("hide");
         canvasOutputTag.classList.remove("hide");
         startCameraStream(deviceId, clickEvent.target.innerText);
         return;
     }
     releaseHardware(videoTag);
+    releaseVideoFile(videoTag);
 }
 
 
 //start stream when a file is uploaded by user, or end stream if none selected
 function selectMediaFileHandler(fileUploadEvent)
 {
+    const file = fileUploadEvent.target.files[0];
+
     //prevent memory leaks by freeing previous file
     if (videoTag.src)
     {
         URL.revokeObjectURL(videoTag.src);
     }
 
-    //replace placeholder image with actual image
-    defaultImageTag.classList.add("hide");
-    canvasOutputTag.classList.remove("hide");
+    //seperate image from videos
+    if (file.type.startsWith("image"))
+    {
+        startUploadedImageStream(file);
+        return;
+    }
 
-    startUploadedVideoStream(fileUploadEvent.target.files[0]);
+    if (file.type.startsWith("video"))
+    {
+        startUploadedVideoStream(file);
+        return;
+    }
 }
 
-document.getElementById('testInput').addEventListener('change', selectMediaFileHandler);
+document.getElementById('fileInput').addEventListener('change', selectMediaFileHandler);
 
 
-/* NOTE: did not use permissions API because:
-1) I tested it and it failed in the edge case where the user revokes permission
-2) deviceIDs are still obscured by browser EVEN IF the user gave permission to use camera 
-yea this way will also fire if closed by tapping again, but there isn't any other good way to detect a dropdown being opened
-*/
-
-//refreshes device list each time it's opened
-selectDeviceButton.addEventListener("click", (clickEvent) => {
+//refreshes device list each time it's opened    
+//note: yea this way will also fire if closed by tapping again, but there isn't any other good way to detect a dropdown being opened
+function openDeviceMenuHandler (clickEvent) {
     //clear old device list
     selectDeviceMenu.replaceChildren();
     
     //check if user gave permission to use camera, if not, no deviceIDs will even show up
     if (!cameraPermissionStatus)
     {
-        console.log("Camera permissions not yet granted");
         mainDisplayPrint("Camera permissions not yet granted");
         return;
     }
@@ -103,4 +108,6 @@ selectDeviceButton.addEventListener("click", (clickEvent) => {
         mainDisplayPrint(`${error.name}: ${error.message}`);
         return;
     });
-});
+}
+
+selectDeviceButton.addEventListener("click", openDeviceMenuHandler);
