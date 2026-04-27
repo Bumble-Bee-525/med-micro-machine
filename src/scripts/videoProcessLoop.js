@@ -6,6 +6,8 @@ var setFPS = 30;
 function processFrame(inputImg, destinationImg)
 {
     try { 
+        debugger;
+
         var delay;
         var begin = Date.now();
 
@@ -16,6 +18,7 @@ function processFrame(inputImg, destinationImg)
             inputImg.delete();
             destinationImg.delete();
             mainDisplayPrint("OpenCV loop shut down. Memory freed successfuly.");
+            console.log("one loop closed");
             return;
         }
 
@@ -59,6 +62,7 @@ function startOpenCVloop()
     var inputImg = new cv.Mat(rawBufferCanvas.height, rawBufferCanvas.width, cv.CV_8UC4);
     var destinationImg = new cv.Mat(rawBufferCanvas.height, rawBufferCanvas.width, cv.CV_8UC4);
     bufferContext = rawBufferCanvas.getContext("2d");
+    debugger;
 
     // schedule the first 
     setTimeout(processFrame, 0, inputImg, destinationImg);

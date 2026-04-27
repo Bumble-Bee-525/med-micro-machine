@@ -1,0 +1,9 @@
+Wierd bug happens when you upload an image then turn on camera????
+
+I think two processFrames loops are happening at the same time.
+OpenCVLoop1 reads OpenCVLoop = true
+
+Questions:
+Why is it so slow
+
+Probably same reason as why camera and static image fight

@@ -36,15 +36,10 @@ function selectMediaFileHandler(fileUploadEvent)
 {
     const file = fileUploadEvent.target.files[0];
 
-    //prevent memory leaks by freeing previous file
-    if (videoTag.src)
-    {
-        URL.revokeObjectURL(videoTag.src);
-    }
-
     //seperate image from videos
     if (file.type.startsWith("image"))
     {
+        debugger;
         startUploadedImageStream(file);
         return;
     }
@@ -54,12 +49,14 @@ function selectMediaFileHandler(fileUploadEvent)
         startUploadedVideoStream(file);
         return;
     }
+
+    mainDisplayPrint("File not recognized as image or video.")
 }
 
 document.getElementById('fileInput').addEventListener('change', selectMediaFileHandler);
 
 
-//refreshes device list each time it's opened    
+//refreshes device list each time it's opened
 //note: yea this way will also fire if closed by tapping again, but there isn't any other good way to detect a dropdown being opened
 function openDeviceMenuHandler (clickEvent) {
     //clear old device list

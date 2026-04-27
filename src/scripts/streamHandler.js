@@ -32,12 +32,12 @@ navigator.mediaDevices.getUserMedia(videoConstraints).then((cameraStream) => {
 //cuts all connections with camera hardware currently used by camera stream
 function releaseHardware(video)
 {
+    //shut down openCV loop
+    openCVloopActive = false;
+    videoStreamActive = false;
+
     if (video.srcObject)
     {
-        //shut down openCV loop
-        openCVloopActive = false;
-        videoStreamActive = false;
-
         //kill all tracks, freeing the hardware
         video.srcObject.getTracks().forEach(track => {
             track.stop();
@@ -52,12 +52,12 @@ function releaseHardware(video)
 
 function releaseVideoFile(video)
 {
+    //shut down openCV loop
+    openCVloopActive = false;
+    videoStreamActive = false;
+    
     if (video.src)
     {
-        //shut down openCV loop
-        openCVloopActive = false;
-        videoStreamActive = false;
-
         //free memory
         URL.revokeObjectURL(video.src);
 
@@ -163,21 +163,26 @@ videoTag.addEventListener("loadedmetadata", videoTagOnMetaDataHandler);
 function imageStreamLoadHandler(loadEvent)
 {
     const tempImage = loadEvent.target;
+    debugger;
 
     //set canvas width and height
     rawBufferCanvas.width = tempImage.naturalWidth;
     rawBufferCanvas.height = tempImage.naturalHeight;
+    debugger;
 
     //draw image onto hidden canvas
     const context = rawBufferCanvas.getContext("2d");
     context.drawImage(tempImage, 0, 0, tempImage.naturalWidth, tempImage.naturalHeight);
+    debugger;
     
     //prevent memory leaks
     tempImage.removeEventListener("load", imageStreamLoadHandler);
     URL.revokeObjectURL(tempImage.src);
+    debugger;
     
     //start openCV loop, but not videoStreamActive
     openCVloopActive = true;
+    debugger;
     startOpenCVloop();
     
     //delete object to free up memory
@@ -187,6 +192,7 @@ function imageStreamLoadHandler(loadEvent)
 //given an uploaded image file, start streaming to canvas
 function startUploadedImageStream(file)
 {
+    debugger;
     //replace placeholder image with actual image
     defaultImageTag.classList.add("hide");
     canvasOutputTag.classList.remove("hide");
@@ -194,11 +200,13 @@ function startUploadedImageStream(file)
     //Release hardware/files from previous stream, kill openCV loop
     releaseHardware(videoTag);
     releaseVideoFile(videoTag);
+    debugger;
 
     //load uploaded image blob onto an image element
     const tempImage = document.createElement("img");
     tempImage.src = URL.createObjectURL(file);
     mainDisplayPrint(`Starting stream on ${file.name}`);
+    debugger;
 
     //wait for image to load before starting openCV Loop
     tempImage.addEventListener("load", imageStreamLoadHandler);
