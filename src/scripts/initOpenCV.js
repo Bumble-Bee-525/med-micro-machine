@@ -1,5 +1,5 @@
 var openCVRuntimeReady = false;
-var openCVloopActive = false;
+var openCVloopActive = null;
 
 
 var Module = {

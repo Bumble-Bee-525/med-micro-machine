@@ -3,16 +3,14 @@ var setFPS = 30;
 
 
 //function call processes one frame from the buffer canvas
-function processFrame(inputImg, destinationImg)
+function processFrame(inputImg, destinationImg, openCVloopActive)
 {
     try { 
-        debugger;
-
         var delay;
         var begin = Date.now();
 
         //shut down loop if told to
-        if (!openCVloopActive)
+        if (!openCVloopActive.active)
         {
             //free memory
             inputImg.delete();
@@ -31,13 +29,16 @@ function processFrame(inputImg, destinationImg)
         //read data from buffer
         inputImg.data.set(bufferContext.getImageData(0, 0, rawBufferCanvas.width, rawBufferCanvas.height).data);
         
-        //DELETE
+        //
+
+
+        //Display image
         cv.imshow(canvasOutputTag, inputImg);
 
         // schedule the next one.
         delay = (1000/setFPS) - (Date.now() - begin);
         mainDisplayPrint(1000/(Date.now() - begin));
-        setTimeout(processFrame, delay, inputImg, destinationImg, bufferContext);
+        setTimeout(processFrame, delay, inputImg, destinationImg, openCVloopActive);
             
     } catch (error) {
         inputImg.delete();
@@ -57,13 +58,21 @@ function startOpenCVloop()
         return;
     }
 
+    //kill old loop
+    if (openCVloopActive)
+    {
+        openCVloopActive.active = false;
+    }
+    //pass a new loop active object to the soon to be new loop
+    openCVloopActive = {"active": true};
+
     
     //initialize frame variables
     var inputImg = new cv.Mat(rawBufferCanvas.height, rawBufferCanvas.width, cv.CV_8UC4);
     var destinationImg = new cv.Mat(rawBufferCanvas.height, rawBufferCanvas.width, cv.CV_8UC4);
     bufferContext = rawBufferCanvas.getContext("2d");
-    debugger;
+    
 
     // schedule the first 
-    setTimeout(processFrame, 0, inputImg, destinationImg);
+    processFrame(inputImg, destinationImg, openCVloopActive);
 }

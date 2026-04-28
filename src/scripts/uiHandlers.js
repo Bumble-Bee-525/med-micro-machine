@@ -39,7 +39,6 @@ function selectMediaFileHandler(fileUploadEvent)
     //seperate image from videos
     if (file.type.startsWith("image"))
     {
-        debugger;
         startUploadedImageStream(file);
         return;
     }
