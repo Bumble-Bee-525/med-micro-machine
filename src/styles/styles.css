@@ -2,6 +2,7 @@
 :root
 {
     --text-display-color : #00a000;
+    --baby-blue : #6acbff;
 }
 
 .maxWidth-md
@@ -30,4 +31,21 @@
 {
     width: 100%;
     height: auto;
+}
+
+#navbarLogo
+{
+    height: 10vh;
+    width: auto;
+}
+
+#navbar
+{
+    color: white;
+    background-color: var(--baby-blue);
+}
+
+#navbar-brand
+{
+    color: white;
 }
