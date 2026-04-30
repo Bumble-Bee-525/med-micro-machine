@@ -16,7 +16,6 @@ function processFrame(inputImg, destinationImg, openCVloopActive)
             inputImg.delete();
             destinationImg.delete();
             mainDisplayPrint("OpenCV loop shut down. Memory freed successfuly.");
-            console.log("one loop closed");
             return;
         }
 
@@ -29,15 +28,16 @@ function processFrame(inputImg, destinationImg, openCVloopActive)
         //read data from buffer
         inputImg.data.set(bufferContext.getImageData(0, 0, rawBufferCanvas.width, rawBufferCanvas.height).data);
         
-        //
+        //Color Calibration
+        //use inRange for mask
+        //find average among
 
 
         //Display image
         cv.imshow(canvasOutputTag, inputImg);
 
-        // schedule the next one.
+        //setTimeout will call to process a frame after a delay to maintain 30 FPS
         delay = (1000/setFPS) - (Date.now() - begin);
-        mainDisplayPrint(1000/(Date.now() - begin));
         setTimeout(processFrame, delay, inputImg, destinationImg, openCVloopActive);
             
     } catch (error) {
@@ -58,7 +58,7 @@ function startOpenCVloop()
         return;
     }
 
-    //kill old loop
+    //kill old loop's loop active object
     if (openCVloopActive)
     {
         openCVloopActive.active = false;

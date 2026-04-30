@@ -107,3 +107,33 @@ function openDeviceMenuHandler (clickEvent) {
 }
 
 selectDeviceButton.addEventListener("click", openDeviceMenuHandler);
+
+
+//downloads any blob file
+function downloadBlob(blob, filename)
+{
+    var blobURL = URL.createObjectURL(blob);
+    const tempA = document.createElement("a");
+    tempA.href = blobURL;
+    tempA.download = filename;
+    tempA.click();
+    tempA.remove();
+    URL.revokeObjectURL(blobURL);
+}
+
+//saves the current buffer and displayed image to download
+function saveImageHandler(clickEvent)
+{
+    var date = new Date();
+    date = `${date.getMonth()}_${date.getDate()}_${date.getFullYear()}_${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}`;
+    
+    rawBufferCanvas.toBlob((imageBlob) => {
+        downloadBlob(imageBlob, `rawImage_${date}.png`);
+    }, "image/png");
+
+    canvasOutputTag.toBlob((imageBlob) => {
+        downloadBlob(imageBlob, `processedImage__${date}.png`);
+    }, "image/png");
+}
+
+saveImageButton.addEventListener("click", saveImageHandler);

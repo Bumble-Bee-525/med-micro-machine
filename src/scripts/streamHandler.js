@@ -3,8 +3,8 @@
 const videoConstraints = {
     audio: false,
     video: {
-        width: 1280,
-        height: 720,
+        width: 1920,
+        height: 1080,
         resizeMode: "none",
         facingMode: "environment"
     }

@@ -6,6 +6,7 @@ var bufferContext;
 const mainTextDisplay = document.getElementById("mainTextDisplay");
 const defaultImageTag = document.getElementById("defaultImage");
 const freezeButtonTag = document.getElementById("freezeButton");
+const saveImageButton = document.getElementById("saveImageButton")
 const selectDeviceButton = document.getElementById("devicesMenuButton");
 const selectDeviceMenu = document.getElementById("devicesMenu");
 
